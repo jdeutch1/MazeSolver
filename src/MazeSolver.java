@@ -5,6 +5,9 @@
  */
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
 
 public class MazeSolver {
     private Maze maze;
@@ -26,30 +29,134 @@ public class MazeSolver {
      * the parents to determine the solution
      * @return An arraylist of MazeCells to visit in order
      */
-    public ArrayList<MazeCell> getSolution() {
-        // TODO: Get the solution from the maze
-        // Should be from start to end cells
-        return null;
+    public ArrayList<MazeCell> getSolution()
+    {
+        // Stack to hold the reversed cell order
+        Stack<MazeCell> reversedCells = new Stack<>();
+
+        // Array list that will hold the solution (in order)
+        ArrayList<MazeCell> solution = new ArrayList<>();
+
+        // Intermediate cell
+        MazeCell interCell = maze.getEndCell();
+
+        /* Put cells into reversedCells stack by accessing
+         the parent cell of each cell in order */
+        while (!interCell.equals(maze.getStartCell()))
+        {
+            reversedCells.push(interCell.getParent());
+            interCell = interCell.getParent();
+        }
+
+        // Add the cells in stack to solution ArrayList
+        /* Because stack is FIFO the steps below will reverse
+         the order of the cells we put into the reversedCells stack */
+        while (!reversedCells.isEmpty())
+        {
+            solution.add(reversedCells.pop());
+        }
+        solution.add(maze.getEndCell());
+
+        return solution;
     }
 
     /**
      * Performs a Depth-First Search to solve the Maze
      * @return An ArrayList of MazeCells in order from the start to end cell
      */
-    public ArrayList<MazeCell> solveMazeDFS() {
-        // TODO: Use DFS to solve the maze
-        // Explore the cells in the order: NORTH, EAST, SOUTH, WEST
-        return null;
+    public ArrayList<MazeCell> solveMazeDFS()
+    {
+        Stack<MazeCell> toExplore = new Stack<>();
+        MazeCell cell = maze.getStartCell();
+
+        // While-loop to add cells to stack
+        /* DFS requires a stack because we want to go
+         as far as we can in the puzzle until we are stopped -- the stack
+          allows us to do this because the most recent cells to visit will be at
+           the top of the stack (FIFO) */
+        while (!cell.equals(maze.getEndCell()))
+        {
+            // Rows and cols of current cell
+            int row = cell.getRow();
+            int col = cell.getCol();
+
+            // Push cells (if they exist) and set parent to current cell
+            if (maze.isValidCell(row - 1, col))
+            {
+                toExplore.push(maze.getCell(row - 1, col));
+                maze.getCell(row - 1, col).setParent(cell);
+            }
+            if (maze.isValidCell(row, col + 1))
+            {
+                toExplore.push(maze.getCell(row, col + 1));
+                maze.getCell(row, col + 1).setParent(cell);
+            }
+            if (maze.isValidCell(row + 1, col))
+            {
+                toExplore.push(maze.getCell(row + 1, col));
+                maze.getCell(row + 1, col).setParent(cell);
+            }
+            if (maze.isValidCell(row, col - 1))
+            {
+                toExplore.push(maze.getCell(row, col - 1));
+                maze.getCell(row, col - 1).setParent(cell);
+            }
+
+            // Update the current cell to the cell on top of stack
+            cell.setExplored(true);
+            cell = toExplore.pop();
+        }
+
+        return getSolution();
     }
 
     /**
      * Performs a Breadth-First Search to solve the Maze
      * @return An ArrayList of MazeCells in order from the start to end cell
      */
-    public ArrayList<MazeCell> solveMazeBFS() {
-        // TODO: Use BFS to solve the maze
-        // Explore the cells in the order: NORTH, EAST, SOUTH, WEST
-        return null;
+    public ArrayList<MazeCell> solveMazeBFS()
+    {
+        Queue<MazeCell> toExplore = new LinkedList<>();
+        MazeCell cell = maze.getStartCell();
+
+        // While-loop to add cells to queue
+        /* BFS requires a queue because we want to progress in the maze
+         one step at a time -- the queue allows us to do this because the
+         most recent cells to visit will be at the bottom of the stack (FILO) */
+        while (!cell.equals(maze.getEndCell()))
+        {
+            // Rows and cols of current cell
+            int row = cell.getRow();
+            int col = cell.getCol();
+
+            // Push cells (if they exist) and set parent to current cell
+            if (maze.isValidCell(row - 1, col))
+            {
+                toExplore.add(maze.getCell(row - 1, col));
+                maze.getCell(row - 1, col).setParent(cell);
+            }
+            if (maze.isValidCell(row, col + 1))
+            {
+                toExplore.add(maze.getCell(row, col + 1));
+                maze.getCell(row, col + 1).setParent(cell);
+            }
+            if (maze.isValidCell(row + 1, col))
+            {
+                toExplore.add(maze.getCell(row + 1, col));
+                maze.getCell(row + 1, col).setParent(cell);
+            }
+            if (maze.isValidCell(row, col - 1))
+            {
+                toExplore.add(maze.getCell(row, col - 1));
+                maze.getCell(row, col - 1).setParent(cell);
+            }
+
+            // Update the current cell to the cell on top of stack
+            cell.setExplored(true);
+            cell = toExplore.remove();
+        }
+
+        return getSolution();
     }
 
     public static void main(String[] args) {
