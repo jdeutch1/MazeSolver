@@ -67,44 +67,44 @@ public class MazeSolver {
     public ArrayList<MazeCell> solveMazeDFS()
     {
         Stack<MazeCell> toExplore = new Stack<>();
-        MazeCell cell = maze.getStartCell();
+        MazeCell currCell = maze.getStartCell();
 
         // While-loop to add cells to stack
         /* DFS requires a stack because we want to go
          as far as we can in the puzzle until we are stopped -- the stack
           allows us to do this because the most recent cells to visit will be at
            the top of the stack (FIFO) */
-        while (!cell.equals(maze.getEndCell()))
+        while (!currCell.equals(maze.getEndCell()))
         {
             // Rows and cols of current cell
-            int row = cell.getRow();
-            int col = cell.getCol();
+            int row = currCell.getRow();
+            int col = currCell.getCol();
 
             // Push cells (if they exist) and set parent to current cell
             if (maze.isValidCell(row - 1, col))
             {
                 toExplore.push(maze.getCell(row - 1, col));
-                maze.getCell(row - 1, col).setParent(cell);
+                maze.getCell(row - 1, col).setParent(currCell);
             }
             if (maze.isValidCell(row, col + 1))
             {
                 toExplore.push(maze.getCell(row, col + 1));
-                maze.getCell(row, col + 1).setParent(cell);
+                maze.getCell(row, col + 1).setParent(currCell);
             }
             if (maze.isValidCell(row + 1, col))
             {
                 toExplore.push(maze.getCell(row + 1, col));
-                maze.getCell(row + 1, col).setParent(cell);
+                maze.getCell(row + 1, col).setParent(currCell);
             }
             if (maze.isValidCell(row, col - 1))
             {
                 toExplore.push(maze.getCell(row, col - 1));
-                maze.getCell(row, col - 1).setParent(cell);
+                maze.getCell(row, col - 1).setParent(currCell);
             }
 
             // Update the current cell to the cell on top of stack
-            cell.setExplored(true);
-            cell = toExplore.pop();
+            currCell.setExplored(true);
+            currCell = toExplore.pop();
         }
 
         return getSolution();
@@ -117,43 +117,43 @@ public class MazeSolver {
     public ArrayList<MazeCell> solveMazeBFS()
     {
         Queue<MazeCell> toExplore = new LinkedList<>();
-        MazeCell cell = maze.getStartCell();
+        MazeCell currCell = maze.getStartCell();
 
         // While-loop to add cells to queue
         /* BFS requires a queue because we want to progress in the maze
          one step at a time -- the queue allows us to do this because the
          most recent cells to visit will be at the bottom of the stack (FILO) */
-        while (!cell.equals(maze.getEndCell()))
+        while (!currCell.equals(maze.getEndCell()))
         {
             // Rows and cols of current cell
-            int row = cell.getRow();
-            int col = cell.getCol();
+            int row = currCell.getRow();
+            int col = currCell.getCol();
 
             // Push cells (if they exist) and set parent to current cell
             if (maze.isValidCell(row - 1, col))
             {
                 toExplore.add(maze.getCell(row - 1, col));
-                maze.getCell(row - 1, col).setParent(cell);
+                maze.getCell(row - 1, col).setParent(currCell);
             }
             if (maze.isValidCell(row, col + 1))
             {
                 toExplore.add(maze.getCell(row, col + 1));
-                maze.getCell(row, col + 1).setParent(cell);
+                maze.getCell(row, col + 1).setParent(currCell);
             }
             if (maze.isValidCell(row + 1, col))
             {
                 toExplore.add(maze.getCell(row + 1, col));
-                maze.getCell(row + 1, col).setParent(cell);
+                maze.getCell(row + 1, col).setParent(currCell);
             }
             if (maze.isValidCell(row, col - 1))
             {
                 toExplore.add(maze.getCell(row, col - 1));
-                maze.getCell(row, col - 1).setParent(cell);
+                maze.getCell(row, col - 1).setParent(currCell);
             }
 
             // Update the current cell to the cell on top of stack
-            cell.setExplored(true);
-            cell = toExplore.remove();
+            currCell.setExplored(true);
+            currCell = toExplore.remove();
         }
 
         return getSolution();
